@@ -2,6 +2,10 @@
 
 #include "async.h"
 #include "config.h"
+#include <chrono>
+#include <thread>
+
+#define SLEEP_INTERVAL 100
 
 int main(int, char *[])
 {
@@ -14,12 +18,14 @@ int main(int, char *[])
     for(char& c : hData)
     {
         async::receive(h, &c, 1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
     }
 
     std::string h2Data("1\n");
     for(char& c : h2Data)
     {
         async::receive(h2, &c, 1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
     }
 
 #else
