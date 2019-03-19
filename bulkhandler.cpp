@@ -28,7 +28,7 @@ void BulkHandler::receive(BulkHandler *handle, const char *data, std::size_t siz
 
 #ifdef _DEBUG
     //std::cout << "BulkHandler::receive " << handle << " == " << this << " " << data << std::endl;
-    std::cout << "BulkHandler::receive " << handle << " == " << this << std::endl;
+    std::cout << "BulkHandler::receive " << handle << " == " << this << " -> " << data << std::endl;
 #endif
 
     m_parser.receive(data, size);
