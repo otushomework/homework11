@@ -28,6 +28,7 @@ public:
         : m_bulkSize(bulkSize) { }
     ~Parser()
     {
+        //std::cout << "~Parser" << std::endl;
         publish();
     }
 
@@ -38,7 +39,26 @@ public:
 
         while (std::getline(fdStream, m_line))
         {
-            if (m_line.size() == 0)
+            //remove white spaces
+            //m_line.erase(std::remove(m_line.begin(), m_line.end(), ' '), m_line.end());
+
+            //std::cout << "m_line " << m_line << std::endl;
+
+            //buffering line, for example when client send symbols one by one
+            if (m_line.length() > 0 && m_line[m_line.length() - 1] != '\n')
+            {
+                m_lineBuffer.append(m_line);
+                continue;
+            }
+
+            //get buffered data
+            m_lineBuffer.append(m_line);
+            m_line = m_lineBuffer;
+            m_lineBuffer.clear();
+
+            //std::cout << "m_line buffered " << m_line << " size " << m_line.size() << std::endl;
+
+            if (m_line.size() == 0 || (m_line.length() == 1 && m_line[1] == '\n') )
                 continue;
 
             switch (m_state)
@@ -112,6 +132,7 @@ private:
     std::list<std::string> m_commands;
     int m_depthCounter = 0;
     std::string m_line;
+    std::string m_lineBuffer;
 };
 
 class Executor

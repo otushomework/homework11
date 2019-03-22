@@ -14,19 +14,47 @@ int main(int, char *[])
     auto h = async::connect(bulk);
     auto h2 = async::connect(bulk);
 
-    std::string hData("1\n2\n3\n4\n5\n6\n{\na\nb\nc\nd\n}\n89\n");
-    for(char& c : hData)
+    int variant = 1;
+
+    switch (variant) {
+    case 0:
     {
-        async::receive(h, &c, 1);
-        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
+        std::string hData("1\n2\n3\n4\n5\n6\n{\na\nb\nc\nd\n}\n89\n");
+        for(char& c : hData)
+        {
+            async::receive(h, &c, 1);
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
+        }
+
+        std::string h2Data("1\n");
+        for(char& c : h2Data)
+        {
+            async::receive(h2, &c, 1);
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
+        }
+        break;
+    }
+    case 1:
+    {
+        async::receive(h,"0",1);
+        async::receive(h," ",1);
+        async::receive(h,"0",1);
+        async::receive(h,"\n",1);
+        async::receive(h,"\n",1);
+        async::receive(h,"1",1);
+        async::receive(h," ",1);
+        async::receive(h,"1",1);
+        async::receive(h,"\n",1);
+        async::receive(h,"2",1);
+        async::receive(h,"\n",1);
+        break;
+    }
+    default:
+        break;
     }
 
-    std::string h2Data("1\n");
-    for(char& c : h2Data)
-    {
-        async::receive(h2, &c, 1);
-        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
-    }
+    async::disconnect(h);
+    async::disconnect(h2);
 
 #else
     auto h = async::connect(bulk);
