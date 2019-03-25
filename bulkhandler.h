@@ -37,21 +37,22 @@ public:
         std::string fullData(data, size);
         std::istringstream fdStream(fullData);
 
+        //buffering data without \n at the end of line
+        if (data[size-1] != '\n')
+        {
+            std::getline(fdStream, m_line);
+            m_lineBuffer.append(m_line);
+            return;
+        }
+
         while (std::getline(fdStream, m_line))
         {
-            //buffering line, for example when client send symbols one by one
-            if (m_line.length() > 0 && m_line[m_line.length() - 1] != '\n')
-            {
-                m_lineBuffer.append(m_line);
-                continue;
-            }
-
             //get buffered data
             m_lineBuffer.append(m_line);
             m_line = m_lineBuffer;
             m_lineBuffer.clear();
 
-            if (m_line.size() == 0 || (m_line.length() == 1 && m_line[1] == '\n') )
+            if ( m_line.size() == 0 )
                 continue;
 
             switch (m_state)

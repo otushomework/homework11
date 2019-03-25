@@ -6,6 +6,7 @@
 #include <thread>
 
 #define SLEEP_INTERVAL 100
+//#define BYTE_BY_BYTE
 
 int main(int, char *[])
 {
